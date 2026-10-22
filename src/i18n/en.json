@@ -1,0 +1,109 @@
+{
+  "app": { "name": "FitCoach", "tagline": "Your personal gym trainer" },
+  "nav": { "today": "Today", "library": "Exercises", "progress": "Progress", "diet": "Diet", "coach": "Coach" },
+  "common": {
+    "save": "Save", "cancel": "Cancel", "add": "Add", "delete": "Delete", "close": "Close", "back": "Back",
+    "kg": "kg", "cm": "cm", "min": "min", "settings": "Settings", "yes": "Yes", "no": "No", "edit": "Edit",
+    "approx": "Values are approximate."
+  },
+  "onboarding": {
+    "title": "Let's build your plan",
+    "subtitle": "Answer a few questions. You can change everything later in Settings.",
+    "name": "Your name", "sex": "Sex", "male": "Male", "female": "Female",
+    "age": "Age", "height": "Height (cm)", "weight": "Weight (kg)",
+    "goal": "Main goal",
+    "goals": {
+      "muscle": "Build muscle", "muscle_d": "Gain size and strength",
+      "fat_loss": "Lose fat", "fat_loss_d": "Drop weight, keep muscle",
+      "recomp": "Both", "recomp_d": "Build muscle and lose fat slowly"
+    },
+    "days": "Gym days per week",
+    "equipment": "What do you prefer?",
+    "eq": {
+      "machines": "Machines", "machines_d": "Gym machines and cables",
+      "free": "Free weights", "free_d": "Dumbbells and barbells",
+      "home": "Home", "home_d": "Dumbbells and bodyweight"
+    },
+    "start": "Create my plan",
+    "required": "Please fill in age, height and weight."
+  },
+  "today": {
+    "hi": "Hi, {{name}}",
+    "next": "Next workout",
+    "cycle": "Workout {{n}} of your {{split}} cycle",
+    "start": "Start workout", "resume": "Continue workout", "skip": "Skip this one",
+    "exercises": "{{count}} exercises",
+    "thisWeek": "This week", "streak": "Week streak", "weeks": "weeks",
+    "total": "Total workouts",
+    "missedTip": "Missed a day? No problem. Just do the next workout in the list.",
+    "warmup": "Warm up 5–10 minutes first: walk or cycle, then one light set of the first exercise.",
+    "nutrition": "Today's food",
+    "openDiet": "Open diet",
+    "lastSession": "Last workout"
+  },
+  "workout": {
+    "finish": "Finish workout", "cancel": "Cancel workout",
+    "confirmCancel": "Cancel this workout? Logged sets will be lost.",
+    "set": "Set", "weight": "kg", "reps": "Reps", "seconds": "Sec",
+    "last": "Last time", "swap": "Swap", "swapTitle": "Machine busy? Pick an alternative",
+    "addSet": "Add set", "rest": "Rest", "skipRest": "Skip",
+    "cardio": "After weights: 15–20 min incline treadmill walk.",
+    "howTo": "How to do it", "video": "Video", "photo": "Photos",
+    "noneDone": "Tick at least one set before finishing.",
+    "done": "Workout saved",
+    "target": "Target: {{sets}} sets × {{reps}}"
+  },
+  "library": {
+    "title": "Exercise library", "search": "Search exercises", "all": "All",
+    "alternatives": "Alternatives", "target": "Works"
+  },
+  "progress": {
+    "title": "Progress",
+    "bodyWeight": "Body weight", "logWeight": "Log today's weight", "change": "Change",
+    "perWeek": "Workouts per week",
+    "exercise": "Exercise progress", "choose": "Choose an exercise", "bestWeight": "Heaviest set (kg)",
+    "history": "History", "noHistory": "No workouts yet. Finish your first workout to see it here.",
+    "noData": "Not enough data yet.",
+    "sets": "sets", "volume": "Volume"
+  },
+  "diet": {
+    "title": "Diet",
+    "targets": "Daily targets", "calories": "Calories", "protein": "Protein", "carbs": "Carbs", "fat": "Fat",
+    "water": "Water", "glasses": "glasses", "left": "{{n}} left", "over": "{{n}} over",
+    "addFood": "Add food", "search": "Search food (rice, egg, dal...)", "servings": "Servings",
+    "todayLog": "Today's log", "empty": "Nothing logged yet today.",
+    "custom": "Add your own food", "customName": "Food name", "serving": "Serving",
+    "bmi": "BMI", "bmr": "BMR", "tdee": "Maintenance",
+    "tips": "Tips",
+    "tip1": "Get protein in every meal: egg, chicken, fish, dal or doi.",
+    "tip2": "Fill half your plate with vegetables, a bit less rice.",
+    "tip3": "Cut sugar, soft drinks and fried snacks as much as you can.",
+    "tip4": "Weigh yourself once a week, in the morning, before eating.",
+    "how": "Calculated with the Mifflin-St Jeor formula from your profile."
+  },
+  "coach": {
+    "title": "AI Coach",
+    "intro": "Ask anything about training, form, food or motivation. I know your profile and recent workouts.",
+    "placeholder": "Ask your coach...", "send": "Send", "clear": "Clear chat", "thinking": "Thinking...",
+    "noKeyTitle": "Connect a free AI key",
+    "noKey1": "Open aistudio.google.com and sign in with Google.",
+    "noKey2": "Click \"Get API key\" and create a key (free).",
+    "noKey3": "Paste it below. It is saved only in this browser.",
+    "keyLabel": "Gemini API key",
+    "s1": "My shoulder hurts on chest press, what should I check?",
+    "s2": "Make me a cheap high-protein Bangladeshi meal plan",
+    "s3": "How do I add weight safely each week?",
+    "error": "Could not reach the AI: {{msg}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language", "theme": "Theme", "system": "System", "light": "Light", "dark": "Dark",
+    "profile": "Profile", "editProfile": "Edit profile",
+    "ai": "AI coach", "aiModel": "Model",
+    "data": "Your data",
+    "dataNote": "Everything is stored in this browser. Export a backup before clearing browser data.",
+    "export": "Export backup", "import": "Import backup", "reset": "Delete all data",
+    "resetConfirm": "Tap again to confirm",
+    "imported": "Backup imported", "importError": "That file is not a FitCoach backup."
+  }
+}
