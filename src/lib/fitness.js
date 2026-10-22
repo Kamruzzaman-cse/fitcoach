@@ -2,19 +2,19 @@ import { EX_BY_ID } from '../data/exercises'
 
 /* ---------- Workout templates ---------- */
 export const TEMPLATES = {
-  push: { name: { en: 'Push Day', bn: 'পুশ ডে' }, focus: { en: 'Chest, shoulders, triceps', bn: 'বুক, কাঁধ, ট্রাইসেপ' },
+  push: { short: { en: 'Push', bn: 'পুশ' }, name: { en: 'Push Day', bn: 'পুশ ডে' }, focus: { en: 'Chest, shoulders, triceps', bn: 'বুক, কাঁধ, ট্রাইসেপ' },
     exercises: ['chest_press_machine', 'incline_chest_press_machine', 'pec_deck', 'shoulder_press_machine', 'lateral_raise_machine', 'cable_pushdown'] },
-  pull: { name: { en: 'Pull Day', bn: 'পুল ডে' }, focus: { en: 'Back, biceps', bn: 'পিঠ, বাইসেপ' },
+  pull: { short: { en: 'Pull', bn: 'পুল' }, name: { en: 'Pull Day', bn: 'পুল ডে' }, focus: { en: 'Back, biceps', bn: 'পিঠ, বাইসেপ' },
     exercises: ['lat_pulldown', 'seated_cable_row', 'chest_supported_row', 'rear_delt_machine', 'biceps_curl_machine', 'cable_hammer_curl'] },
-  legs: { name: { en: 'Leg Day', bn: 'লেগ ডে' }, focus: { en: 'Legs, abs', bn: 'পা, পেট' },
+  legs: { short: { en: 'Legs', bn: 'লেগস' }, name: { en: 'Leg Day', bn: 'লেগ ডে' }, focus: { en: 'Legs, abs', bn: 'পা, পেট' },
     exercises: ['leg_press', 'leg_extension', 'leg_curl', 'calf_raise_machine', 'cable_crunch'] },
-  upper: { name: { en: 'Upper Body', bn: 'আপার বডি' }, focus: { en: 'Chest, back, shoulders, arms', bn: 'বুক, পিঠ, কাঁধ, হাত' },
+  upper: { short: { en: 'Upper', bn: 'আপার' }, name: { en: 'Upper Body', bn: 'আপার বডি' }, focus: { en: 'Chest, back, shoulders, arms', bn: 'বুক, পিঠ, কাঁধ, হাত' },
     exercises: ['chest_press_machine', 'lat_pulldown', 'shoulder_press_machine', 'seated_cable_row', 'biceps_curl_machine', 'cable_pushdown'] },
-  lower: { name: { en: 'Lower Body', bn: 'লোয়ার বডি' }, focus: { en: 'Legs, abs', bn: 'পা, পেট' },
+  lower: { short: { en: 'Lower', bn: 'লোয়ার' }, name: { en: 'Lower Body', bn: 'লোয়ার বডি' }, focus: { en: 'Legs, abs', bn: 'পা, পেট' },
     exercises: ['leg_press', 'leg_curl', 'leg_extension', 'calf_raise_machine', 'plank'] },
-  fullA: { name: { en: 'Full Body A', bn: 'ফুল বডি A' }, focus: { en: 'Whole body', bn: 'পুরো শরীর' },
+  fullA: { short: { en: 'Full A', bn: 'ফুল A' }, name: { en: 'Full Body A', bn: 'ফুল বডি A' }, focus: { en: 'Whole body', bn: 'পুরো শরীর' },
     exercises: ['leg_press', 'chest_press_machine', 'lat_pulldown', 'shoulder_press_machine', 'leg_curl', 'cable_crunch'] },
-  fullB: { name: { en: 'Full Body B', bn: 'ফুল বডি B' }, focus: { en: 'Whole body', bn: 'পুরো শরীর' },
+  fullB: { short: { en: 'Full B', bn: 'ফুল B' }, name: { en: 'Full Body B', bn: 'ফুল বডি B' }, focus: { en: 'Whole body', bn: 'পুরো শরীর' },
     exercises: ['db_rdl', 'incline_chest_press_machine', 'seated_cable_row', 'lateral_raise_machine', 'leg_extension', 'plank'] }
 }
 
@@ -53,11 +53,6 @@ export function buildWorkout(templateKey, profile, swaps = {}) {
     return { baseId, id, sets: 3, reps: reps[kind], type: ex.type || 'reps' }
   })
   return { key: templateKey, ...tpl, items, cardio: profile.goal !== 'muscle' }
-}
-
-export function nextTemplate(profile, cycleIndex) {
-  const cycle = SPLITS[profile.daysPerWeek]?.cycle || SPLITS[3].cycle
-  return cycle[cycleIndex % cycle.length]
 }
 
 /* ---------- Nutrition ----------

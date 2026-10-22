@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../store/useStore'
-import { askCoach } from '../lib/ai'
+import { askCoach, serverCoachAvailable } from '../lib/ai'
 import { Icon } from '../components/Icon'
 
 /* Very small markdown: **bold** and bullet lines. Keeps the bundle tiny. */
@@ -28,6 +28,9 @@ export default function Coach() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const endRef = useRef(null)
+  const [server, setServer] = useState(null) // null = checking, true/false = shared coach available
+
+  useEffect(() => { if (!settings.aiKey) serverCoachAvailable().then(setServer) }, [settings.aiKey])
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [chat.length, busy])
 
@@ -48,7 +51,9 @@ export default function Coach() {
     }
   }
 
-  if (!settings.aiKey) {
+  if (!settings.aiKey && server === null) return <p className="text-muted">{t('coach.thinking')}</p>
+
+  if (!settings.aiKey && !server) {
     return (
       <div className="space-y-4">
         <h1 className="heading text-4xl">{t('coach.title')}</h1>

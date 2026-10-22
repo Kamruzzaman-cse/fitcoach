@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { buildWorkout, nextTemplate, todayStr } from '../lib/fitness'
+import { buildWorkout, todayStr } from '../lib/fitness'
+import { DEFAULT_DAYS } from '../lib/schedule'
 
 /*
   One global store (Zustand) for the whole app.
@@ -18,6 +19,7 @@ export const useStore = create(
       swaps: {},
       activeWorkout: null,
       sessions: [],
+      reschedules: [],
       weights: [],
       foodLog: {},
       customFoods: [],
@@ -32,12 +34,12 @@ export const useStore = create(
       setSetting: (key, value) => set(s => ({ settings: { ...s.settings, [key]: value } })),
 
       /* ----- workouts ----- */
-      startWorkout: () => {
-        const { profile, cycleIndex, swaps, sessions } = get()
-        const key = nextTemplate(profile, cycleIndex)
-        const w = buildWorkout(key, profile, swaps)
+      // templateKey: which workout. scheduledFor: the planned date it belongs to (for make-up workouts)
+      startWorkout: (templateKey, scheduledFor = todayStr()) => {
+        const { profile, swaps, sessions } = get()
+        const w = buildWorkout(templateKey, profile, swaps)
         const items = w.items.map(it => ({ ...it, sets: makeSets(it, sessions) }))
-        set({ activeWorkout: { templateKey: key, startedAt: Date.now(), items } })
+        set({ activeWorkout: { templateKey, scheduledFor, startedAt: Date.now(), items } })
       },
       updateSet: (exIdx, setIdx, patch) => set(s => {
         const items = s.activeWorkout.items.map((it, i) => i !== exIdx ? it : {
@@ -65,13 +67,26 @@ export const useStore = create(
           .map(it => ({ id: it.id, type: it.type, sets: it.sets.filter(x => x.done).map(x => ({ w: +x.w || 0, r: +x.r || 0 })) }))
           .filter(it => it.sets.length)
         const session = {
-          id: uid(), date: todayStr(), templateKey: a.templateKey,
+          id: uid(), date: todayStr(), scheduledFor: a.scheduledFor || todayStr(), templateKey: a.templateKey,
           durationMin: Math.max(1, Math.round((Date.now() - a.startedAt) / 60000)), items
         }
-        return { sessions: [...s.sessions, session], activeWorkout: null, cycleIndex: s.cycleIndex + 1 }
+        return { sessions: [...s.sessions, session], activeWorkout: null }
       }),
       cancelWorkout: () => set({ activeWorkout: null }),
-      skipWorkout: () => set(s => ({ cycleIndex: s.cycleIndex + 1 })),
+
+      /* ----- schedule changes ----- */
+      // move a planned workout from one date to another (to = null means skip it)
+      reschedule: (from, to, templateKey) => get().applyMoves([{ from, to, templateKey }]),
+      // apply several moves at once (used by "shift my week"); they share a group so Undo removes all of them
+      applyMoves: moves => set(s => {
+        const group = uid()
+        const froms = moves.map(m => m.from)
+        return { reschedules: [...s.reschedules.filter(r => !froms.includes(r.from)), ...moves.map(m => ({ ...m, group }))].slice(-60) }
+      }),
+      undoReschedule: from => set(s => {
+        const r = s.reschedules.find(x => x.from === from)
+        return { reschedules: s.reschedules.filter(x => (r?.group ? x.group !== r.group : x.from !== from)) }
+      }),
 
       /* ----- body weight ----- */
       logWeight: kg => set(s => {
@@ -100,9 +115,22 @@ export const useStore = create(
 
       /* ----- data ----- */
       importData: data => set(data),
-      resetAll: () => set({ profile: null, cycleIndex: 0, swaps: {}, activeWorkout: null, sessions: [], weights: [], foodLog: {}, customFoods: [], water: {}, chat: [] })
+      resetAll: () => set({ profile: null, cycleIndex: 0, swaps: {}, activeWorkout: null, sessions: [], reschedules: [], weights: [], foodLog: {}, customFoods: [], water: {}, chat: [] })
     }),
-    { name: 'fitcoach-data', version: 1 }
+    {
+      name: 'fitcoach-data',
+      version: 2,
+      // upgrade data saved by v1 (no weekly schedule yet)
+      migrate: (state, version) => {
+        if (version < 2) {
+          state.reschedules = state.reschedules || []
+          if (state.profile && !state.profile.trainingDays) {
+            state.profile.trainingDays = DEFAULT_DAYS[state.profile.daysPerWeek] || DEFAULT_DAYS[3]
+          }
+        }
+        return state
+      }
+    }
   )
 )
 

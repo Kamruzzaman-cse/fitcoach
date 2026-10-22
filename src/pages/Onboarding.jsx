@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../store/useStore'
-import { SPLITS } from '../lib/fitness'
+import { SPLITS, TEMPLATES } from '../lib/fitness'
 import { tx, num } from '../i18n'
+import { WEEK_ORDER, DEFAULT_DAYS, sortDays, dayShort, weekPlan } from '../lib/schedule'
 
 const GOALS = ['muscle', 'fat_loss', 'recomp']
 const EQUIP = ['machines', 'free', 'home']
@@ -32,15 +33,21 @@ export default function Onboarding({ edit = false }) {
   const setSetting = useStore(s => s.setSetting)
 
   const [f, setF] = useState(
-    saved || { name: '', sex: 'male', age: '', height: '', weight: '', goal: 'recomp', daysPerWeek: 6, equipment: 'machines' }
+    saved || { name: '', sex: 'male', age: '', height: '', weight: '', goal: 'recomp', daysPerWeek: 6, trainingDays: DEFAULT_DAYS[6], equipment: 'machines' }
   )
   const [error, setError] = useState('')
   const up = (k, v) => setF(p => ({ ...p, [k]: v }))
+  const days = f.trainingDays || DEFAULT_DAYS[f.daysPerWeek] || DEFAULT_DAYS[6]
+  const toggleDay = d => up('trainingDays', days.includes(d) ? days.filter(x => x !== d) : [...days, d])
+  const validDays = days.length >= 3 && days.length <= 6
+  const preview = validDays ? weekPlan({ trainingDays: days }) : {}
 
   const submit = e => {
     e.preventDefault()
-    const profile = { ...f, age: +f.age, height: +f.height, weight: +f.weight }
+    const trainingDays = sortDays(days)
+    const profile = { ...f, age: +f.age, height: +f.height, weight: +f.weight, trainingDays, daysPerWeek: trainingDays.length }
     if (!profile.age || !profile.height || !profile.weight) return setError(t('onboarding.required'))
+    if (trainingDays.length < 3 || trainingDays.length > 6) return setError(t('schedule.pickRange'))
     saveProfile(profile)
     navigate('/')
   }
@@ -93,16 +100,25 @@ export default function Onboarding({ edit = false }) {
         </div>
 
         <div className="card space-y-3">
-          <span className="label">{t('onboarding.days')}</span>
-          <div className="grid grid-cols-4 gap-2">
-            {[3, 4, 5, 6].map(d => (
-              <button key={d} type="button" aria-pressed={f.daysPerWeek === d} onClick={() => up('daysPerWeek', d)}
-                className={`rounded-xl border py-3 heading text-2xl ${f.daysPerWeek === d ? 'border-accent bg-accent text-white' : 'border-line bg-surface'}`}>
-                {num(d, lang)}
-              </button>
-            ))}
+          <span className="label">{t('schedule.days')}</span>
+          <p className="text-xs text-muted -mt-2">{t('schedule.daysHint')}</p>
+          <div className="grid grid-cols-7 gap-1">
+            {WEEK_ORDER.map(d => {
+              const on = days.includes(d)
+              return (
+                <button key={d} id={'pick-day-' + d} type="button" aria-pressed={on} onClick={() => toggleDay(d)}
+                  className={`rounded-lg border-2 py-2 flex flex-col items-center gap-1 min-w-0 ${on ? 'border-accent bg-accent text-white' : 'border-line bg-surface text-muted'}`}>
+                  <span className="text-xs font-semibold">{dayShort(d, lang)}</span>
+                  <span className="text-[10px] leading-none truncate w-full text-center">
+                    {on && preview[d] ? tx(TEMPLATES[preview[d]].short, lang) : t('schedule.rest')}
+                  </span>
+                </button>
+              )
+            })}
           </div>
-          <p className="text-sm text-muted">{tx(SPLITS[f.daysPerWeek].name, lang)}</p>
+          <p className={`text-sm ${validDays ? 'text-muted' : 'text-warn'}`}>
+            {validDays ? `${num(days.length, lang)} · ${tx(SPLITS[days.length].name, lang)}` : t('schedule.pickRange')}
+          </p>
         </div>
 
         <div className="card space-y-3">

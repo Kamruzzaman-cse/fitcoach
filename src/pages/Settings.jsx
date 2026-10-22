@@ -18,7 +18,7 @@ function Segmented({ value, options, onChange, label }) {
   )
 }
 
-const DATA_KEYS = ['profile', 'cycleIndex', 'swaps', 'sessions', 'weights', 'foodLog', 'customFoods', 'water']
+const DATA_KEYS = ['profile', 'cycleIndex', 'swaps', 'sessions', 'reschedules', 'weights', 'foodLog', 'customFoods', 'water']
 
 export default function Settings() {
   const { t, i18n } = useTranslation()
