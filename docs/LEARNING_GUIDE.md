@@ -161,7 +161,11 @@ git push -u origin main
 ```
 (আগে GitHub-এ `fitcoach` নামে খালি repo বানিয়ে নিও।)
 
-তারপর **Vercel**-এ গিয়ে repo import করো। Framework হিসেবে Vite নিজে থেকেই ধরবে। কয়েক মিনিটে লাইভ লিংক পাবে, সেটা ফোনে খুলে "Add to Home screen" দিলে অ্যাপের মতো চলবে।
+তারপর repo-র **Settings → Pages → Source**-এ **GitHub Actions** বেছে নাও। `.github/workflows/deploy.yml` ফাইলটা প্রতিবার push করলে নিজে থেকেই `npm run build` চালিয়ে অ্যাপটা `https://kamruzzaman-cse.github.io/fitcoach/`-এ পাবলিশ করে। repo-র **Actions** ট্যাবে গিয়ে দেখতে পারবে build চলছে কিনা।
+
+এটাকে বলে **CI/CD**: কোড push করলেই অটোমেটিক build আর deploy। ইন্ডাস্ট্রিতে সবাই এভাবেই কাজ করে।
+
+GitHub Pages-এ সার্ভার ফাংশন চলে না, তাই সেখানে AI কোচ ব্যবহার করতে প্রত্যেক ইউজারকে নিজের ফ্রি Gemini key দিতে হবে। key ছাড়া সবাইকে কোচ দিতে চাইলে একই repo Vercel-এও import করো (নিচে ৯ নম্বর অংশ দেখো)।
 
 ---
 

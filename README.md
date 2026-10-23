@@ -2,6 +2,10 @@
 
 A bilingual (English / বাংলা) personal gym trainer web app. Built with React, works offline, and installs on your phone like an app.
 
+**Use it now: https://kamruzzaman-cse.github.io/fitcoach/**
+
+No sign-up needed. Open the link, answer a few questions and start training. On your phone, tap "Add to Home screen" to install it like an app. Your data stays on your own device.
+
 ## Features
 
 - **Personal plan**: pick your goal, your gym days (for example every day except Sunday) and machines or free weights. The app builds a Full Body, Upper/Lower or Push/Pull/Legs week around your days.
@@ -48,7 +52,7 @@ npm run preview   # test the production build
 
 **Vercel**: import the GitHub repo, framework preset "Vite", build command `npm run build`, output `dist`.
 
-**GitHub Pages**: run `npm run build` and publish the `dist` folder (the app uses relative paths and HashRouter, so it works in a sub-folder).
+**GitHub Pages (automatic)**: this repo includes `.github/workflows/deploy.yml`. In the repo go to Settings → Pages → Source and choose **GitHub Actions**. Every push to `main` builds and publishes the app to `https://<username>.github.io/<repo>/`. The app uses relative paths and HashRouter, so it works in a sub-folder.
 
 ## AI coach setup
 
