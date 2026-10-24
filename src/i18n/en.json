@@ -206,9 +206,9 @@
     "doneText": "Great work. Eat enough protein and sleep 7–8 hours.",
     "missedTitle": "You missed {{w}} on {{day}}",
     "recommend": "Best day to make it up: {{day}}",
-    "why": "It's a free day and it isn't next to another {{w}}, so your muscles get time to recover.",
+    "why": "You said you can go on this day, and it isn't next to another {{w}}, so your muscles get time to recover.",
     "recommendToday": "Today is free, so today is the best day to make it up.",
-    "noDay": "No free day left this week. Do it now if you have energy, or skip it. Next week starts fresh.",
+    "noDay": "No gym day left this week to move it to.",
     "moveTo": "Move to {{day}}",
     "doNow": "Do it now",
     "skip": "Skip it",
@@ -218,10 +218,14 @@
     "movedNote": "{{w}} moved to {{day}}",
     "skippedNote": "{{w}} skipped",
     "makeupNote": "Make-up for {{day}}",
-    "tapHint": "Busy on a gym day? Tap that day above to move the workout.",
-    "shiftTitle": "No free day left, so shift your week",
+    "tapHint": "Tap any day above to see its workout. Busy that day? You can move it from there.",
+    "shiftTitle": "No backup day left, so shift your week",
     "shiftText": "Do {{w}} on {{day}} and push the rest of the week back by one day. {{last}} on {{lastDay}} will be skipped.",
     "shift": "Shift my week",
-    "moreMissed": "{{n}} more missed this week. It will show up after you decide on this one."
+    "moreMissed": "{{n}} more missed this week. It will show up after you decide on this one.",
+    "backupTitle": "If you miss a workout, can you go on any of these days instead? (optional)",
+    "backupHint": "These are your rest days. Pick the ones you could use to make up a missed workout.",
+    "backupNone": "None picked: a missed workout will shift your week instead.",
+    "restOption": "Or, if you can go on a rest day this week:"
   }
 }

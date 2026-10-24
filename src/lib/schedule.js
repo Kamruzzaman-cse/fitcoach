@@ -82,13 +82,14 @@ export function getWeek(state, ref = new Date()) {
 
 /*
   Recommend the best day to make up a workout:
-  1. a free day (no workout) from today until the end of the week
+  1. a backup day (a day the user said they CAN go if needed) from today until the end of the week.
+     Days that are not gym days and not backup days are days the user can't go, so they are never suggested.
   2. not right next to a day that trains the same muscles (gives them 48h to recover)
   3. the earliest one that fits
 */
-export function recommendDay(week, missed) {
+export function recommendDay(week, missed, backupDays = []) {
   const today = dateStr(new Date())
-  const free = week.filter(d => d.date >= today && d.date !== missed.date && !d.workout && d.status !== 'done')
+  const free = week.filter(d => d.date >= today && d.date !== missed.date && !d.workout && d.status !== 'done' && backupDays.includes(d.wd))
   if (!free.length) return null
   const tpl = missed.workout || missed.base
   const clash = d => {

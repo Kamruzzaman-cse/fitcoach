@@ -13,7 +13,7 @@ const STYLE = {
   skipped: 'border-transparent bg-surface-2 text-muted line-through'
 }
 
-/* 7-day strip (Sat -> Fri). Tap a gym day to move it. */
+/* 7-day strip (Sat -> Fri). Tap a day to see its workout. */
 export default function WeekStrip({ week, selected, onSelect }) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
@@ -21,7 +21,7 @@ export default function WeekStrip({ week, selected, onSelect }) {
     <div className="grid grid-cols-7 gap-1">
       {week.map(d => {
         const tpl = d.workout || (d.status === 'moved' || d.status === 'skipped' ? d.base : null)
-        const tappable = ['today', 'upcoming', 'missed', 'moved', 'skipped'].includes(d.status)
+        const tappable = true // every day can be tapped to see what's planned
         return (
           <button
             key={d.date}

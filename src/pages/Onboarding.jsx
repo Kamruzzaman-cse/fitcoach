@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useStore } from '../store/useStore'
 import { SPLITS, TEMPLATES } from '../lib/fitness'
 import { tx, num } from '../i18n'
-import { WEEK_ORDER, DEFAULT_DAYS, sortDays, dayShort, weekPlan } from '../lib/schedule'
+import { WEEK_ORDER, DEFAULT_DAYS, sortDays, dayShort, dayName, weekPlan } from '../lib/schedule'
 
 const GOALS = ['muscle', 'fat_loss', 'recomp']
 const EQUIP = ['machines', 'free', 'home']
@@ -40,12 +40,16 @@ export default function Onboarding({ edit = false }) {
   const days = f.trainingDays || DEFAULT_DAYS[f.daysPerWeek] || DEFAULT_DAYS[6]
   const toggleDay = d => up('trainingDays', days.includes(d) ? days.filter(x => x !== d) : [...days, d])
   const validDays = days.length >= 3 && days.length <= 6
+  // backup days: rest days the user could still use to make up a missed workout
+  const backup = (f.backupDays || []).filter(d => !days.includes(d))
+  const toggleBackup = d => up('backupDays', backup.includes(d) ? backup.filter(x => x !== d) : [...backup, d])
+  const restDays = WEEK_ORDER.filter(d => !days.includes(d))
   const preview = validDays ? weekPlan({ trainingDays: days }) : {}
 
   const submit = e => {
     e.preventDefault()
     const trainingDays = sortDays(days)
-    const profile = { ...f, age: +f.age, height: +f.height, weight: +f.weight, trainingDays, daysPerWeek: trainingDays.length }
+    const profile = { ...f, age: +f.age, height: +f.height, weight: +f.weight, trainingDays, daysPerWeek: trainingDays.length, backupDays: backup }
     if (!profile.age || !profile.height || !profile.weight) return setError(t('onboarding.required'))
     if (trainingDays.length < 3 || trainingDays.length > 6) return setError(t('schedule.pickRange'))
     saveProfile(profile)
@@ -120,6 +124,22 @@ export default function Onboarding({ edit = false }) {
             {validDays ? `${num(days.length, lang)} · ${tx(SPLITS[days.length].name, lang)}` : t('schedule.pickRange')}
           </p>
         </div>
+
+        {validDays && restDays.length > 0 && (
+          <div className="card space-y-3">
+            <span className="label">{t('schedule.backupTitle')}</span>
+            <p className="text-xs text-muted -mt-2">{t('schedule.backupHint')}</p>
+            <div className="flex flex-wrap gap-2">
+              {restDays.map(d => (
+                <button key={d} id={'backup-day-' + d} type="button" aria-pressed={backup.includes(d)} onClick={() => toggleBackup(d)}
+                  className={`rounded-lg border-2 px-4 py-2 text-sm font-semibold ${backup.includes(d) ? 'border-accent bg-accent-soft text-accent' : 'border-line bg-surface text-muted'}`}>
+                  {dayName(d, lang)}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted">{backup.length ? '' : t('schedule.backupNone')}</p>
+          </div>
+        )}
 
         <div className="card space-y-3">
           <span className="label">{t('onboarding.equipment')}</span>

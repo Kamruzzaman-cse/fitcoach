@@ -2,7 +2,7 @@
 
 A bilingual (English / বাংলা) personal gym trainer web app. Built with React, works offline, and installs on your phone like an app.
 
-**Use it now: https://kamruzzaman-cse.github.io/fitcoach/**
+**Use it now: https://fitcoach-bd.vercel.app**
 
 No sign-up needed. Open the link, answer a few questions and start training. On your phone, tap "Add to Home screen" to install it like an app. Your data stays on your own device.
 
@@ -15,7 +15,7 @@ No sign-up needed. Open the link, answer a few questions and start training. On 
 - **Progress**: body-weight chart, workouts per week, strength progress per exercise, full history.
 - **Diet**: calorie and macro targets (Mifflin-St Jeor), Bangladeshi food database (bhaat, ruti, dal, egg, fish...), custom foods, water tracker.
 - **AI coach**: chat with a Gemini-powered coach that knows your profile and recent workouts, in English or Bangla.
-- **Smart rescheduling**: missed a workout, or busy on a gym day? The app recommends the best free day to make it up (avoiding back-to-back sessions for the same muscles). If no free day is left, it offers to shift the rest of the week by one day. Everything can be undone.
+- **Smart rescheduling**: missed a workout, or busy on a gym day? If you picked backup days, the app recommends the best one to make it up (avoiding back-to-back sessions for the same muscles). Otherwise it offers to shift the rest of the week by one day. Everything can be undone.
 - Light/dark theme, backup export/import, installable PWA.
 
 ## Tech stack
@@ -52,7 +52,7 @@ npm run preview   # test the production build
 
 **Vercel**: import the GitHub repo, framework preset "Vite", build command `npm run build`, output `dist`.
 
-**GitHub Pages (automatic)**: this repo includes `.github/workflows/deploy.yml`. In the repo go to Settings → Pages → Source and choose **GitHub Actions**. Every push to `main` builds and publishes the app to `https://<username>.github.io/<repo>/`. The app uses relative paths and HashRouter, so it works in a sub-folder.
+Live at **https://fitcoach-bd.vercel.app**. Every push to `main` redeploys automatically.
 
 ## AI coach setup
 

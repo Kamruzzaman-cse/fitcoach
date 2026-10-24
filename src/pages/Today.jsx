@@ -50,13 +50,17 @@ function WorkoutCard({ templateKey, label, note, onStart, resume, children }) {
             </li>
           ))}
         </ol>
-        <div className="flex gap-2 pt-1">
-          <button type="button" className="btn-primary flex-1" onClick={onStart}>
-            <Icon name="play" size={18} /> {resume ? t('today.resume') : t('today.start')}
-          </button>
-          {children}
-        </div>
-        <p className="text-xs text-muted">{t('today.warmup')}</p>
+        {(onStart || children) && (
+          <div className="flex gap-2 pt-1">
+            {onStart && (
+              <button type="button" className="btn-primary flex-1" onClick={onStart}>
+                <Icon name="play" size={18} /> {resume ? t('today.resume') : t('today.start')}
+              </button>
+            )}
+            {children}
+          </div>
+        )}
+        {onStart && <p className="text-xs text-muted">{t('today.warmup')}</p>}
       </div>
     </section>
   )
@@ -68,13 +72,17 @@ export default function Today() {
   const navigate = useNavigate()
   const s = useStore()
   const { profile, sessions, activeWorkout, undoReschedule } = s
-  const [selected, setSelected] = useState(null) // date picked on the week strip
+  const [selected, setSelected] = useState(null) // date picked on the week strip (shows that day's workout)
+  const [busyFor, setBusyFor] = useState(null) // date the user said they can't make
 
   const week = getWeek(s)
   const today = week.find(d => d.isToday)
   const missed = week.filter(d => d.status === 'missed')
   const next = nextTrainingDay(s)
   const sel = week.find(d => d.date === selected)
+  const busyDay = week.find(d => d.date === busyFor)
+  const pick = date => { setSelected(date); setBusyFor(null) }
+  const dayLabel = d => `${dayName(d.wd, lang)} · ${digits(d.date.slice(8) + '/' + d.date.slice(5, 7), lang)}`
 
   const doneThisWeek = week.filter(d => d.status === 'done').length
   const planned = trainingDaysOf(profile).length
@@ -102,7 +110,7 @@ export default function Today() {
           <h2 className="font-semibold">{t('schedule.week')}</h2>
           <span className="text-sm text-muted tabular">{num(doneThisWeek, lang)}/{num(planned, lang)} {t('schedule.done')}</span>
         </div>
-        <WeekStrip week={week} selected={selected} onSelect={setSelected} />
+        <WeekStrip week={week} selected={selected} onSelect={pick} />
         {!sel && <p className="text-xs text-muted">{t('schedule.tapHint')}</p>}
         {sel && (sel.status === 'moved' || sel.status === 'skipped') && (
           <div className="flex items-center justify-between gap-3 rounded-lg bg-surface-2 p-3 text-sm">
@@ -111,16 +119,35 @@ export default function Today() {
                 ? t('schedule.movedNote', { w: wName(sel), day: dayName(new Date(sel.movedTo + 'T00:00:00').getDay(), lang) })
                 : t('schedule.skippedNote', { w: wName(sel) })}
             </span>
-            <button type="button" className="btn-ghost !py-1.5 text-sm shrink-0" onClick={() => { undoReschedule(sel.date); setSelected(null) }}>
+            <button type="button" className="btn-ghost !py-1.5 text-sm shrink-0" onClick={() => { undoReschedule(sel.date); pick(null) }}>
               {t('schedule.undo')}
             </button>
           </div>
         )}
+        {sel && sel.status === 'rest' && (
+          <div className="rounded-lg bg-surface-2 p-3 text-sm">
+            <p className="font-semibold">{dayLabel(sel)}: {t('schedule.restTitle')}</p>
+            <p className="text-muted">{t('schedule.restText')}</p>
+          </div>
+        )}
       </section>
 
-      {/* "I'm busy" panel for a selected upcoming day */}
-      {sel && (sel.status === 'today' || sel.status === 'upcoming') && (
-        <MakeupCard day={sel} week={week} mode="busy" onDone={() => setSelected(null)} />
+      {/* Preview of the day picked on the week strip (today already has its own card below) */}
+      {sel && sel.workout && !sel.isToday && !busyFor && (
+        <WorkoutCard
+          templateKey={sel.workout}
+          label={dayLabel(sel) + (sel.status === 'done' ? ' · ✓ ' + t('schedule.done') : '')}
+          note={sel.makeupOf ? t('schedule.makeupNote', { day: dayName(new Date(sel.makeupOf + 'T00:00:00').getDay(), lang) }) : null}
+        >
+          {sel.status === 'upcoming' && (
+            <button type="button" className="btn-ghost flex-1" onClick={() => setBusyFor(sel.date)}>{t('schedule.busy')}</button>
+          )}
+        </WorkoutCard>
+      )}
+
+      {/* "I'm busy" panel: recommends another day or shifting the week */}
+      {busyDay && (busyDay.status === 'today' || busyDay.status === 'upcoming') && (
+        <MakeupCard day={busyDay} week={week} mode="busy" onDone={() => pick(null)} />
       )}
 
       {/* Active workout always comes first */}
@@ -143,7 +170,7 @@ export default function Today() {
               note={today.makeupOf ? t('schedule.makeupNote', { day: dayName(new Date(today.makeupOf + 'T00:00:00').getDay(), lang) }) : null}
               onStart={() => start(today.workout, today.makeupOf || today.date)}
             >
-              <button type="button" className="btn-ghost" onClick={() => setSelected(today.date)}>{t('schedule.busy')}</button>
+              <button type="button" className="btn-ghost" onClick={() => { setSelected(null); setBusyFor(today.date) }}>{t('schedule.busy')}</button>
             </WorkoutCard>
           )}
 

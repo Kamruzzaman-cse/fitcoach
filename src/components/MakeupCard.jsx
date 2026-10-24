@@ -14,16 +14,19 @@ export default function MakeupCard({ day, week, mode, onDone }) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
   const navigate = useNavigate()
-  const { reschedule, applyMoves, startWorkout, activeWorkout } = useStore()
+  const { reschedule, applyMoves, startWorkout, activeWorkout, profile } = useStore()
 
   const tpl = day.workout
   const w = tx(TEMPLATES[tpl].name, lang)
-  const rec = recommendDay(week, day)
+  const rec = recommendDay(week, day, profile.backupDays || [])
   const shift = rec ? null : shiftPlan(week, day) // only when no free day is left
   const byDate = d => week.find(x => x.date === d)
   const firstT = shift && byDate(shift[0].to)
   const lastMove = shift && shift[shift.length - 1]
   const lastT = shift && byDate(lastMove.from)
+  // rest days left this week: offered as an option when no backup day was recommended
+  const todayDate = week.find(d => d.isToday)?.date || ''
+  const restLeft = rec ? [] : week.filter(d => d.date >= todayDate && d.date !== day.date && !d.workout && d.status === 'rest')
 
   const moveTo = () => { reschedule(day.date, rec.date, tpl); onDone?.() }
   const skip = () => { reschedule(day.date, null, tpl); onDone?.() }
@@ -64,6 +67,20 @@ export default function MakeupCard({ day, week, mode, onDone }) {
         </div>
       ) : (
         <p className="text-sm text-muted">{t('schedule.noDay')}</p>
+      )}
+
+      {restLeft.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-sm text-muted">{t('schedule.restOption')}</p>
+          <div className="flex flex-wrap gap-2">
+            {restLeft.map(d => (
+              <button key={d.date} type="button" className="btn-ghost !py-1.5 text-sm"
+                onClick={() => { reschedule(day.date, d.date, tpl); onDone?.() }}>
+                {t('schedule.moveTo', { day: dayName(d.wd, lang) })}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="flex flex-wrap gap-2">
